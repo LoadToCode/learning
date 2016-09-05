@@ -67,7 +67,8 @@ describe Pacman do
     pacman = Pacman.new
     pacman.move_right
     pacman.move_left
-    expect(pacman.score).to eq 1
+    expect(pacman.score).to eq 2
+    # pacman gains a point for entering the board, moving the first time, and then after for the second place, moving the third time 
   end
 
 end

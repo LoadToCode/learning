@@ -4,6 +4,7 @@ class Pacman
   def initialize
     @position = rand(16)
     @dots = "x"*16
+    @dots[@position] = " "
   end
 
   def eat_dot
@@ -23,6 +24,7 @@ class Pacman
 
   def score
     @dots.count(" ")
+    # start of pacman is no point
   end
 
 end
