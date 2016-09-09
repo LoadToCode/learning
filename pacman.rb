@@ -2,7 +2,7 @@ class Pacman
   attr_reader :position, :dots
 
   def initialize
-    @position = rand(16)
+    @position = Kernel.rand(16)
     @dots = "x"*16
   end
 
@@ -13,16 +13,22 @@ class Pacman
 
   def move_left
     eat_dot
-    @position -= 1
+    @position = (@position - 1) % 16
   end
 
   def move_right
     eat_dot
-    @position += 1
+    @position = (@position + 1) % 16
   end
 
   def score
     @dots.count(" ")
   end
+
+  def state
+    "running"
+  end
+
+
 
 end
