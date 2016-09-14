@@ -13,16 +13,16 @@ describe Pacman do
     expect(Pacman.new.position).to be < 16
   end
 
-  it "should have a different position each time" do
-    old_position = Pacman.new.position
-    expect(Pacman.new.position).to_not eq old_position
+  it "should have a random position" do
+    expect(Kernel).to receive(:rand).and_return(4)
+    expect(Pacman.new.position).to eq 4
   end
 
   it "moves Pacman left" do
+    allow(Kernel).to receive(:rand).and_return(4)
     pacman = Pacman.new
-    old_position = pacman.position
     pacman.move_left
-    expect(pacman.position).to eq old_position - 1
+    expect(pacman.position).to eq 3
   end
 
   it "moves right" do
@@ -67,7 +67,32 @@ describe Pacman do
     pacman = Pacman.new
     pacman.move_right
     pacman.move_left
-    expect(pacman.score).to eq 1
+    expect(pacman.score).to eq 2
   end
+
+  it "when the game starts, it is not over" do
+    expect(Pacman.new.state).to eq "running"
+  end
+
+  it "pacman's position wraps right around the board" do
+    allow(Kernel).to receive(:rand).and_return(15)
+    pacman = Pacman.new
+    pacman.move_right
+    expect(pacman.position).to eq 0
+  end
+
+  it "pacman's position wraps left around the board" do
+    allow(Kernel).to receive(:rand).and_return(0)
+    pacman = Pacman.new
+    pacman.move_left
+    expect(pacman.position).to eq 15
+  end
+
+  # it "when all dots are eaten, the game is over" do
+  #   pacman = Pacman.new
+  #   20.times{pacman.move_right}
+  #   25.times{pacman.move_left}
+  #   expect(pacman.state).to eq "game over"
+  # end
 
 end
