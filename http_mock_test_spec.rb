@@ -1,15 +1,24 @@
 require "./http_mock_test"
-require "mocha"
-require "net/http"
+require 'webmock/rspec'
 
 describe TwitterBearerTokens do
-  it "doesn't make a real http request" do
-    http = mock :http
-    Net::HTTP.stub!(:start).and_yield http
-    http.should_receive(:request_post).and_return "iamasecretbeartoken"
+  it do
+    stub_request(:post, "https://api.twitter.com/oauth2/token").
+         with(:body => "grant_type=client_credentials",
+              :headers => {'Authorization'=>"Basic #{Base64.strict_encode64("AAA:BBB")}"}).
+         to_return(:status => 200, :body => JSON.dump(access_token: 'this is the new token'))
 
-    token = TwitterBearerTokens.getBearerToken(:consec => "abc", :conkey => "def")
+    result = TwitterBearerTokens.getBearerToken(conkey: 'AAA', consec: 'BBB')
 
-    expect(token).to eq "iamasecretbeartoken"
+    expect(result).to eq('this is the new token')
+  end
+
+  it do
+    stub_request(:post, "https://api.twitter.com/oauth2/token").
+         with(:body => "grant_type=client_credentials",
+              :headers => {'Authorization'=>"Basic #{Base64.strict_encode64("AAA:BBB")}"}).
+         to_return(:status => 500)
+
+    expect { TwitterBearerTokens.getBearerToken(conkey: 'AAA', consec: 'BBB') }.to raise_error('There was a problem with the Twitter server')
   end
 end
