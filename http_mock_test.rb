@@ -21,8 +21,6 @@ module TwitterBearerTokens
       bearer_token = token_hash["access_token"]
     end
 
-
-
     bearer_token
   end
 end
