@@ -17,8 +17,12 @@ module TwitterBearerTokens
 
     Net::HTTP.start(uri.host, uri.port, use_ssl: true) do |http|
       response = http.request_post(uri, data, authorization_headers)
-      token_hash = JSON.parse(response.body)
-      bearer_token = token_hash["access_token"]
+      if response.code == '200'
+        token_hash = JSON.parse(response.body)
+        bearer_token = token_hash["access_token"]
+      else
+        raise StandardError, 'There was a problem with the Twitter server'
+      end
     end
 
     bearer_token
